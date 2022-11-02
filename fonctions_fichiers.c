@@ -43,7 +43,7 @@ void afficher_tab_2D(char** tab, int n, int m){
         printf("\n");
     }
 }
-
+//compte nbre max lignes et de colonnes dans le nomFichier
 void taille_fichier(const char* nomFichier, int* nbLig, int* nbCol){
     FILE* fichier = NULL ;
     fichier = fopen(nomFichier, "r") ;
@@ -96,13 +96,12 @@ char** lire_fichier(const char* nomFichier){
             c = fgetc(fichier);
             if ( c=='\n' || c=='\r' || c==EOF){
 
-                if (c=='\r'){
+                if (c=='\r'){ //car saut de ligne peut etre /r /n le fgetc permet de s'alligner avec /n
                     c = fgetc(fichier);
                 }
-                if(c!=EOF){
+                if(c!=EOF){//si le caractère n'est pas EOF incrémente le nbre de ligne
                     nbLigne++;
                 }
-
                 nbColonne=0;
             }
             else{
@@ -111,10 +110,25 @@ char** lire_fichier(const char* nomFichier){
                 nbColonne++;
             }
 
-        } while (c != EOF) ;
+        } while (c != EOF) ; // deuxième partie du do while do : tout ce qu'il y avant jusqu'a arriver à la condition while
         fclose(fichier);
 
     }
     return tab;
 
 }
+
+char** modifier_caractere(char** tab, int n, int m, char ancien, char nouveau) {
+    char** tab2=initialiser_tab_2D(n, m);
+    for (int i=0; i<n; i++){
+        for (int j=0; j<m; j++){
+            if (tab[i][j]==ancien){
+                tab2[i][j]=nouveau;
+            } else {
+            tab2[i][j]=tab[i][j];
+            }
+        }
+    }
+    return tab2;
+}
+

@@ -5,11 +5,13 @@
 
 int main(void){
     char** tab=initialiser_tab_2D(5,10);
-    //afficher_tab_2D(tab,5,10);
+    afficher_tab_2D(tab,5,10);
     int nbLig =0;
     int nbCol=0;
     taille_fichier("tabCaracteres.txt",&nbLig,&nbCol);
     printf ("%d--%d \n", nbLig, nbCol);
     char** tab2=lire_fichier("tabCaracteres.txt");
     afficher_tab_2D(tab2,nbLig,nbCol);
+    char** tab3=modifier_caractere(tab2, nbLig, nbCol, 'b', '2');
+    afficher_tab_2D(tab3,nbLig,nbCol);
 }

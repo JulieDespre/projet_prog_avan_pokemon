@@ -11,7 +11,7 @@
 # =============================================================================
 
 # =============================================================================
-# Project: projet_prog_avan
+# Project: Project
 # Configurations: Debug
 # =============================================================================
 
@@ -40,49 +40,6 @@ include CMakeFiles/rules.ninja
 # Logical path to working directory; prefix for absolute paths.
 
 cmake_ninja_workdir = /home/juliedespre/CLionProjects/projet_prog_avan/cmake-build-debug/
-# =============================================================================
-# Object build statements for EXECUTABLE target projet_prog_avan
-
-
-#############################################
-# Order-only phony target for projet_prog_avan
-
-build cmake_object_order_depends_target_projet_prog_avan: phony || CMakeFiles/projet_prog_avan.dir
-
-build CMakeFiles/projet_prog_avan.dir/main.cpp.o: CXX_COMPILER__projet_prog_avan_Debug /home/juliedespre/CLionProjects/projet_prog_avan/main.cpp || cmake_object_order_depends_target_projet_prog_avan
-  DEP_FILE = CMakeFiles/projet_prog_avan.dir/main.cpp.o.d
-  FLAGS = -g -std=gnu++98
-  OBJECT_DIR = CMakeFiles/projet_prog_avan.dir
-  OBJECT_FILE_DIR = CMakeFiles/projet_prog_avan.dir
-
-build CMakeFiles/projet_prog_avan.dir/fonctions_fichiers.c.o: C_COMPILER__projet_prog_avan_Debug /home/juliedespre/CLionProjects/projet_prog_avan/fonctions_fichiers.c || cmake_object_order_depends_target_projet_prog_avan
-  DEP_FILE = CMakeFiles/projet_prog_avan.dir/fonctions_fichiers.c.o.d
-  FLAGS = -g
-  OBJECT_DIR = CMakeFiles/projet_prog_avan.dir
-  OBJECT_FILE_DIR = CMakeFiles/projet_prog_avan.dir
-
-build CMakeFiles/projet_prog_avan.dir/main.c.o: C_COMPILER__projet_prog_avan_Debug /home/juliedespre/CLionProjects/projet_prog_avan/main.c || cmake_object_order_depends_target_projet_prog_avan
-  DEP_FILE = CMakeFiles/projet_prog_avan.dir/main.c.o.d
-  FLAGS = -g
-  OBJECT_DIR = CMakeFiles/projet_prog_avan.dir
-  OBJECT_FILE_DIR = CMakeFiles/projet_prog_avan.dir
-
-
-# =============================================================================
-# Link build statements for EXECUTABLE target projet_prog_avan
-
-
-#############################################
-# Link the executable projet_prog_avan
-
-build projet_prog_avan: CXX_EXECUTABLE_LINKER__projet_prog_avan_Debug CMakeFiles/projet_prog_avan.dir/main.cpp.o CMakeFiles/projet_prog_avan.dir/fonctions_fichiers.c.o CMakeFiles/projet_prog_avan.dir/main.c.o
-  FLAGS = -g
-  OBJECT_DIR = CMakeFiles/projet_prog_avan.dir
-  POST_BUILD = :
-  PRE_LINK = :
-  TARGET_FILE = projet_prog_avan
-  TARGET_PDB = projet_prog_avan.dbg
-
 
 #############################################
 # Utility command for edit_cache
@@ -118,7 +75,12 @@ build rebuild_cache: phony CMakeFiles/rebuild_cache.util
 #############################################
 # Folder: /home/juliedespre/CLionProjects/projet_prog_avan/cmake-build-debug
 
-build all: phony projet_prog_avan
+build all: phony
+
+# =============================================================================
+# Unknown Build Time Dependencies.
+# Tell Ninja that they may appear as side effects of build rules
+# otherwise ordered by order-only dependencies.
 
 # =============================================================================
 # Built-in targets

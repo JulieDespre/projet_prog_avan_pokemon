@@ -1,2 +1,3 @@
+/home/juliedespre/CLionProjects/projet_prog_avan/cmake-build-debug/CMakeFiles/main.dir
 /home/juliedespre/CLionProjects/projet_prog_avan/cmake-build-debug/CMakeFiles/edit_cache.dir
 /home/juliedespre/CLionProjects/projet_prog_avan/cmake-build-debug/CMakeFiles/rebuild_cache.dir

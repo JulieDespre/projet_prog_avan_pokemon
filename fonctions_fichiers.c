@@ -131,4 +131,38 @@ char** modifier_caractere(char** tab, int n, int m, char ancien, char nouveau) {
     }
     return tab2;
 }
+void ecrire_fichier(const char* nomFichier, char** tab, int n, int m) {
+    // nbLig = n;
+    // nbCol = m;
+
+    FILE *fichier = NULL;
+    fichier = fopen(nomFichier, "a");//a pour écrire dasn un fichier déjà écrit sinon w pour écrire dans un fichier
+
+    if (fichier != NULL) {
+        for (int i = 0; i < n; i++){
+            for (int j = 0; j<m; j++){
+                fputc(tab[i][j], fichier);
+            }
+            fputc('\n', fichier);
+        }
+        fclose(fichier);
+    }
+}
+
+SDL_Texture* charger_image (const char* nomfichier, SDL_Renderer* renderer){
+    SDL_CreateTextureFromSurface(renderer,SDL_LoadBMP(nomfichier));
+}
+
+SDL_Texture* charger_image_transparente(const char* nomfichier,SDL_Renderer* renderer,Uint8 r, Uint8 g, Uint8 b){
+    SDL_Surface* surface = SDL_LoadBMP(nomfichier);
+    Uint32 key = SDL_MapRGB(surface->format,r,g,b);
+    SDL_SetColorKey(surface, SDL_TRUE, key);
+    SDL_CreateTextureFromSurface(renderer,surface);
+}
+
+SDL_Texture* charger_texte(const char* message, SDL_Renderer* renderer, TTF_Font *font, SDL_Color color){
+    SDL_Surface* surface=TTF_RenderText_Solid(font, message,color);
+    SDL_CreateTextureFromSurface(renderer,surface);
+}
+
 

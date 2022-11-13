@@ -39,7 +39,7 @@ int main(void){
     }
 
 // Créer la fenêtre
-int fenetreW=1224,fenetreH=640;
+int fenetreW=1100,fenetreH=600;
     fenetre = SDL_CreateWindow("Fenetre SDL", SDL_WINDOWPOS_CENTERED,
                                SDL_WINDOWPOS_CENTERED, fenetreW, fenetreH, SDL_WINDOW_RESIZABLE);
     if(fenetre == NULL) // En cas d’erreur
@@ -63,7 +63,7 @@ int fenetreW=1224,fenetreH=640;
     printf("%d %d\n",objetW,objetH);
     for(int i=0; i<nbLig; i++){
         for(int j=0; j<nbCol; j++) {
-            SrcR_sprite[i][j].x = objetW / 16 * (((int)tab[i][j]-48)%16);
+            SrcR_sprite[i][j].x = objetW / 16 * (((int)tab[i][j]-48)%16); // car char en int codé en ascii 0 = 48
             SrcR_sprite[i][j].y = objetH / 10 * (((int)tab[i][j]-48)/16);
             SrcR_sprite[i][j].w = objetW / 16; // Largeur de l’objet en pixels de la texture
             SrcR_sprite[i][j].h = objetH / 10; // Hauteur de l’objet en pixels de la texture
@@ -74,6 +74,23 @@ int fenetreW=1224,fenetreH=640;
         }
     }
 
+// Charger l’image avec la transparence
+    Uint8 r = 0, g = 255, b = 255;
+    SDL_Texture* sprites = charger_image_transparente("sprites.bmp", ecran,r,g,b);
+//Récupérer largeur et hargeur de la texture avec SDL_QueryTexture
+    SDL_Surface* surface = SDL_LoadBMP("sprites.bmp");
+    Uint32 key = SDL_MapRGB(surface->format,r,g,b);
+    SDL_QueryTexture(sprites,&key,NULL,&objetW,&objetH);
+    SDL_Rect DestR_chat, SrcR_chat;
+
+        SrcR_chat.x = 0;
+        SrcR_chat.y = 0;
+        SrcR_chat.w = objetW/3; // Largeur de l’objet en pixels de la texture
+        SrcR_chat.h = objetH/2; // Hauteur de l’objet en pixels de la texture
+        DestR_chat.x = 0;
+        DestR_chat.y = 0;
+        DestR_chat.w = objetW/nbCol*3; // Largeur du sprite
+        DestR_chat.h = objetH/nbLig*2; // Hauteur du sprite
 
 
 // Boucle principale
@@ -84,6 +101,7 @@ int fenetreW=1224,fenetreH=640;
                 SDL_RenderCopy(ecran, fond, &SrcR_sprite[i][j], &DestR_sprite[i][j]);
             }
         }
+        SDL_RenderCopy(ecran, sprites, &SrcR_chat, &DestR_chat);
         SDL_PollEvent(&evenements);
         switch (evenements.type) {
             case SDL_QUIT:
@@ -92,12 +110,20 @@ int fenetreW=1224,fenetreH=640;
             case SDL_KEYDOWN:
                 switch (evenements.key.keysym.sym) {
                     case SDLK_ESCAPE:
-                    case SDLK_q:
-                    case SDLK_i:
-                        terminer = true;
+                    case SDLK_d:
+                        DestR_chat.x = (DestR_chat.x+fenetreW/nbCol)%fenetreW;
                         break;
-                    case SDLK_j:
-                        printf("coucou");
+                    case SDLK_s:
+                        DestR_chat.y = (DestR_chat.y+fenetreH/nbLig);
+                        break;
+                    case SDLK_q:
+                        DestR_chat.x = (DestR_chat.x-fenetreW/nbCol);
+                        break;
+                    case SDLK_z:
+                        DestR_chat.y = (DestR_chat.y-fenetreH/nbLig);
+                        break;
+                    case SDLK_p:
+                        terminer = true;
                         break;
                 }
         }

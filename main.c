@@ -1,5 +1,5 @@
 //
-// Created by juliedespre on 14/11/22.
+// Created by juliedespre, dorapapai on 14/11/22.
 //
 
 #include "fonctions_fichiers.h"
@@ -74,7 +74,7 @@ int main(void){
         }
     }
 
-    SDL_Texture* fond2 = charger_image( "pavage.bmp", ecran );
+    /*SDL_Texture* fond2 = charger_image( "pavage.bmp", ecran );
     int objet2W;
     int objet2H;
     //recupère taille objet
@@ -88,7 +88,7 @@ int main(void){
     DestR_fond2.x=0;
     DestR_fond2.y=0;
     DestR_fond2.w=fenetreW;
-    DestR_fond2.h=fenetreH;
+    DestR_fond2.h=fenetreH;*/
 
 // Charger l’image avec la transparence
     Uint8 r = 255, g = 255, b = 255;
@@ -103,24 +103,46 @@ int main(void){
     SrcR_chat.y = 0;
     SrcR_chat.w = objetW/3; // Largeur de l’objet en pixels de la texture, changer nom
     SrcR_chat.h = objetH/4; // Hauteur de l’objet en pixels de la texture, changer nom
-    DestR_chat.x = 5;
-    DestR_chat.y = 6;
+    DestR_chat.x = 0;
+    DestR_chat.y = 0;
     DestR_chat.w = objetW/nbCol*2.5; // Largeur du sprite
     DestR_chat.h = objetH/nbLig/1.5; // Hauteur du sprite
+
+// Charger l’image avec la transparence
+    r = 255, g = 255, b = 255;
+    SDL_Texture* citrouille = charger_image_transparente("citrouilles.bmp", ecran,r,g,b);
+//récupérer objet (citrouille)
+    int citrouilleW;
+    int citrouilleH;
+    SDL_Surface* surfaceCit = SDL_LoadBMP("citrouilles.bmp");
+    Uint32 keyCit = SDL_MapRGB(surfaceCit->format,r,g,b);
+    SDL_QueryTexture(citrouille,&keyCit,NULL,&citrouilleW,&citrouilleH);
+    SDL_Rect SrcRCit, DestRCit;
+    SrcRCit.x = 0;
+    SrcRCit.y = 0;
+    SrcRCit.w = citrouilleW/12; // Largeur de l’objet en pixels de la texture
+    SrcRCit.h = citrouilleH/4; // Hauteur de l’objet en pixels de la texture
+    DestRCit.x = 250;
+    DestRCit.y = 250;
+    DestRCit.w = citrouilleW/nbCol;//largeur de la citrouille
+    DestRCit.h = citrouilleH/nbLig;//hauteur de la citrouille
 
 
 // Boucle principale
     int etat=0;
     while(!terminer) {
-        if (tab[DestR_chat.y / (fenetreH / nbLig)][DestR_chat.x / (fenetreW / nbCol)] == '8') etat=1;
-        else etat=0;
+        if (tab[DestR_chat.y / (fenetreH / nbLig)][DestR_chat.x / (fenetreW / nbCol)] == '8') //etat=1;
+        //else etat=0
+
         SDL_RenderClear(ecran);
+
         for(int i=0; i<nbLig; i++) {
             for (int j = 0; j < nbCol; j++) {
                 if (etat==0) SDL_RenderCopy(ecran, fond, &SrcR_sprite[i][j], &DestR_sprite[i][j]);
-                else SDL_RenderCopy(ecran, fond2, &SrcR_fond2, &DestR_fond2);
+                //else SDL_RenderCopy(ecran, fond2, &SrcR_fond2, &DestR_fond2);
             }
         }
+        SDL_RenderCopy(ecran, citrouille, &SrcRCit, &DestRCit);
         SDL_RenderCopy(ecran, sprites, &SrcR_chat, &DestR_chat);
         while (SDL_PollEvent(&evenements)) {
 

@@ -117,7 +117,6 @@ char** lire_fichier(const char* nomFichier){
     return tab;
 
 }
-
 char** modifier_caractere(char** tab, int n, int m, char ancien, char nouveau) {
     char** tab2=initialiser_tab_2D(n, m);
     for (int i=0; i<n; i++){

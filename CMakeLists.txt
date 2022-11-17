@@ -11,7 +11,7 @@ set(SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
 # Specify the sources of the project with ${SRC_DIR}
 file(GLOB SOURCES "${SRC_DIR}/main.c")
 # Add the executable with the sources in ${SOURCES}
-add_executable(${PROJECT_NAME} ${SOURCES})
+add_executable(${PROJECT_NAME} ${SOURCES} main.c)
 # Find installed packages with syntax: find_package(<PackageName>)
 find_package( SDL2 REQUIRED )
 # If the package is found, serveral variables associated to the

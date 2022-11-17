@@ -19,7 +19,7 @@ char** initialiser_tab_2D(int n, int m){
     char** tab_2D=allouer_tab_2D(n,m);
     for (int i=0; i<n; i++){
         for (int j=0; j<m; j++){
-            tab_2D [i][j]=' ';
+            tab_2D [i][j]='7'; // code pour la case herbe faire un truc mieux !!!
         }
     }
     return tab_2D;
@@ -165,4 +165,42 @@ SDL_Texture* charger_texte(const char* message, SDL_Renderer* renderer, TTF_Font
     SDL_CreateTextureFromSurface(renderer,surface);
 }
 
-
+void deplacement(SDL_Event *evenements,SDL_Rect *DestR_chat,SDL_Rect *SrcR_chat,char** tab,int fenetreW,int fenetreH,int nbCol,int nbLig,int objetH,int objetW){
+    switch ((*evenements).key.keysym.sym) {
+        case SDLK_ESCAPE:
+        case SDLK_RIGHT:
+            (*SrcR_chat).x = 0;
+            (*SrcR_chat).y = objetH/2;
+            if ((*DestR_chat).x + fenetreW / nbCol < fenetreW &&
+                    (tab[(*DestR_chat).y / (fenetreH / nbLig)][(*DestR_chat).x / (fenetreW / nbCol) + 1] == '7'||tab[(*DestR_chat).y / (fenetreH / nbLig)][(*DestR_chat).x / (fenetreW / nbCol) + 1] == '8')) {
+                (*DestR_chat).x = ((*DestR_chat).x + fenetreW / nbCol);
+            }
+            break;
+        case SDLK_DOWN:
+            (*SrcR_chat).x = 0;
+            (*SrcR_chat).y = 0;
+            if ((*DestR_chat).y + fenetreH / nbLig < fenetreH &&
+                    (tab[(*DestR_chat).y / (fenetreH / nbLig) + 1][(*DestR_chat).x / (fenetreW / nbCol)] == '7'||tab[(*DestR_chat).y / (fenetreH / nbLig) + 1][(*DestR_chat).x / (fenetreW / nbCol)] == '8')) {
+                (*DestR_chat).y = ((*DestR_chat).y + fenetreH / nbLig);
+            }
+            break;
+        case SDLK_LEFT:
+            (*SrcR_chat).x = 0;
+            (*SrcR_chat).y = objetH/4;
+            if ((*DestR_chat).x - fenetreW / nbCol >= 0 &&
+                    (tab[(*DestR_chat).y / (fenetreH / nbLig)][(*DestR_chat).x / (fenetreW / nbCol) - 1] == '7'||tab[(*DestR_chat).y / (fenetreH / nbLig)][(*DestR_chat).x / (fenetreW / nbCol) - 1] == '8')) {
+                (*DestR_chat).x = ((*DestR_chat).x - fenetreW / nbCol);
+            }
+            break;
+        case SDLK_UP:
+            (*SrcR_chat).x = 0;
+            (*SrcR_chat).y = objetH/2+objetH/4;
+            if ((*DestR_chat).y - fenetreH / nbLig >= 0 &&
+                    (tab[(*DestR_chat).y / (fenetreH / nbLig) - 1][(*DestR_chat).x / (fenetreW / nbCol)] == '7' || tab[(*DestR_chat).y / (fenetreH / nbLig) - 1][(*DestR_chat).x / (fenetreW / nbCol)] == '8')){
+                (*DestR_chat).y = ((*DestR_chat).y - fenetreH / nbLig);
+            }
+            break;
+        default:
+            break;
+    }
+}

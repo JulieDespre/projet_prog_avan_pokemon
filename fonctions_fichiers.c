@@ -1,5 +1,5 @@
 //
-// Created by juliedespre on 01/11/22.
+// Created by juliedespre, dorapapai on 01/11/22.
 //
 #include "fonctions_fichiers.h"
 
@@ -19,7 +19,7 @@ char** initialiser_tab_2D(int n, int m){
     char** tab_2D=allouer_tab_2D(n,m);
     for (int i=0; i<n; i++){
         for (int j=0; j<m; j++){
-            tab_2D [i][j]='7'; // code pour la case herbe faire un truc mieux !!!
+            tab_2D [i][j]='0'; // code pour la case herbe faire un truc mieux !!!
         }
     }
     return tab_2D;
@@ -79,6 +79,8 @@ void taille_fichier(const char* nomFichier, int* nbLig, int* nbCol){
 
 }
 
+
+
 char** lire_fichier(const char* nomFichier){
 
     int nbLig =0;
@@ -135,7 +137,7 @@ void ecrire_fichier(const char* nomFichier, char** tab, int n, int m) {
     // nbCol = m;
 
     FILE *fichier = NULL;
-    fichier = fopen(nomFichier, "a");//a pour écrire dasn un fichier déjà écrit sinon w pour écrire dans un fichier
+    fichier = fopen(nomFichier, "a");//a pour écrire dans un fichier déjà écrit sinon w pour écrire dans un fichier
 
     if (fichier != NULL) {
         for (int i = 0; i < n; i++){
@@ -164,14 +166,14 @@ SDL_Texture* charger_texte(const char* message, SDL_Renderer* renderer, TTF_Font
     SDL_CreateTextureFromSurface(renderer,surface);
 }
 
-void deplacement(SDL_Event *evenements,SDL_Rect *DestR_chat,SDL_Rect *SrcR_chat,char** tab,int fenetreW,int fenetreH,int nbCol,int nbLig,int objetH,int objetW){
+int deplacement(SDL_Event *evenements,SDL_Rect *DestR_chat,SDL_Rect *SrcR_chat,char** tab,int fenetreW,int fenetreH,int nbCol,int nbLig,int objetH,int objetW){
     switch ((*evenements).key.keysym.sym) {
         case SDLK_ESCAPE:
         case SDLK_RIGHT:
             (*SrcR_chat).x = 0;
             (*SrcR_chat).y = objetH/2;
             if ((*DestR_chat).x + fenetreW / nbCol < fenetreW &&
-                    (tab[(*DestR_chat).y / (fenetreH / nbLig)][(*DestR_chat).x / (fenetreW / nbCol) + 1] == '7'||tab[(*DestR_chat).y / (fenetreH / nbLig)][(*DestR_chat).x / (fenetreW / nbCol) + 1] == '8')) {
+                    (tab[(*DestR_chat).y / (fenetreH / nbLig)][(*DestR_chat).x / (fenetreW / nbCol) + 1] == '0'||tab[(*DestR_chat).y / (fenetreH / nbLig)][(*DestR_chat).x / (fenetreW / nbCol) + 1] == '4')) {
                 (*DestR_chat).x = ((*DestR_chat).x + fenetreW / nbCol);
             }
             break;
@@ -179,7 +181,7 @@ void deplacement(SDL_Event *evenements,SDL_Rect *DestR_chat,SDL_Rect *SrcR_chat,
             (*SrcR_chat).x = 0;
             (*SrcR_chat).y = 0;
             if ((*DestR_chat).y + fenetreH / nbLig < fenetreH &&
-                    (tab[(*DestR_chat).y / (fenetreH / nbLig) + 1][(*DestR_chat).x / (fenetreW / nbCol)] == '7'||tab[(*DestR_chat).y / (fenetreH / nbLig) + 1][(*DestR_chat).x / (fenetreW / nbCol)] == '8')) {
+                    (tab[(*DestR_chat).y / (fenetreH / nbLig) + 1][(*DestR_chat).x / (fenetreW / nbCol)] == '0'||tab[(*DestR_chat).y / (fenetreH / nbLig) + 1][(*DestR_chat).x / (fenetreW / nbCol)] == '4')) {
                 (*DestR_chat).y = ((*DestR_chat).y + fenetreH / nbLig);
             }
             break;
@@ -187,7 +189,7 @@ void deplacement(SDL_Event *evenements,SDL_Rect *DestR_chat,SDL_Rect *SrcR_chat,
             (*SrcR_chat).x = 0;
             (*SrcR_chat).y = objetH/4;
             if ((*DestR_chat).x - fenetreW / nbCol >= 0 &&
-                    (tab[(*DestR_chat).y / (fenetreH / nbLig)][(*DestR_chat).x / (fenetreW / nbCol) - 1] == '7'||tab[(*DestR_chat).y / (fenetreH / nbLig)][(*DestR_chat).x / (fenetreW / nbCol) - 1] == '8')) {
+                    (tab[(*DestR_chat).y / (fenetreH / nbLig)][(*DestR_chat).x / (fenetreW / nbCol) - 1] == '0'||tab[(*DestR_chat).y / (fenetreH / nbLig)][(*DestR_chat).x / (fenetreW / nbCol) - 1] == '4')) {
                 (*DestR_chat).x = ((*DestR_chat).x - fenetreW / nbCol);
             }
             break;
@@ -195,11 +197,13 @@ void deplacement(SDL_Event *evenements,SDL_Rect *DestR_chat,SDL_Rect *SrcR_chat,
             (*SrcR_chat).x = 0;
             (*SrcR_chat).y = objetH/2+objetH/4;
             if ((*DestR_chat).y - fenetreH / nbLig >= 0 &&
-                    (tab[(*DestR_chat).y / (fenetreH / nbLig) - 1][(*DestR_chat).x / (fenetreW / nbCol)] == '7' || tab[(*DestR_chat).y / (fenetreH / nbLig) - 1][(*DestR_chat).x / (fenetreW / nbCol)] == '8')){
+                    (tab[(*DestR_chat).y / (fenetreH / nbLig) - 1][(*DestR_chat).x / (fenetreW / nbCol)] == '0' || tab[(*DestR_chat).y / (fenetreH / nbLig) - 1][(*DestR_chat).x / (fenetreW / nbCol)] == '4')){
                 (*DestR_chat).y = ((*DestR_chat).y - fenetreH / nbLig);
             }
             break;
+
         default:
             break;
     }
+    return 0;
 }

@@ -6,6 +6,7 @@
 #define MAIN_MONSTRE_H
 #include<stdio.h>
 #include<stdlib.h>
+#include <stdbool.h>
 
 typedef struct monstre * monstre;
 
@@ -25,8 +26,13 @@ struct Ennemi{
 };
 
 listeEnnemi creerListeEnnemi(monstre e);
+listeEnnemi creerListeEnnemiVide();
 void ajouterEnnemi(listeEnnemi l,monstre e);
-monstre creerEnnemi(int p,int d, int a, int x, int y);
-monstre creerMonstre(int p,int d, int a);
-int combat(monstre m1,monstre m2);
+listeEnnemi cleanEnnemi(monstre m1,listeEnnemi l);
+monstre creerMonstre(int p,int d, int a,int pX,int pY);
+bool combat(monstre m1,listeEnnemi e);
+bool collision(monstre m1,monstre m2);
+bool collisionListe(monstre m1,listeEnnemi l);
+listeEnnemi creationMonstre(int nbMonstre);
+
 #endif //MAIN_MONSTRE_H

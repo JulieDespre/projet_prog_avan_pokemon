@@ -1,6 +1,7 @@
 //
 // Created by juliedespre, dorapapai on 14/11/22.
 //
+#include <time.h>
 #include "fonctions_fichiers.h"
 #include "monstre.h"
 
@@ -24,8 +25,10 @@ int main(void) {
     //exercice 3
     int nbLig = 0;
     int nbCol = 0;
+    srand(time(NULL)); // initialisation de rand pour placement des monstres aléatoire
+
     taille_fichier("terrain.txt", &nbLig, &nbCol);
-    char **tab = lire_fichier("terrain.txt");
+    char **tab = lire_fichier("terrain.txt"); // passer fichier d'entrée txt en tab
     afficher_tab_2D(tab, nbLig, nbCol);
 
 
@@ -41,6 +44,7 @@ int main(void) {
     }
 
 // Créer la fenêtre
+    // dimension de la fenetre de jeux dimension en fonction du nombre de cases du fichier txt
     int fenetreW = 1505, fenetreH = 640;
     fenetre = SDL_CreateWindow("Fenetre SDL", SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, fenetreW, fenetreH, SDL_WINDOW_RESIZABLE);
     if (fenetre == NULL) // En cas d’erreur
@@ -60,7 +64,7 @@ int main(void) {
     //recupère taille objet
     SDL_QueryTexture(fond, NULL, NULL, &objetW, &objetH);
     SDL_Rect DestR_sprite[nbLig][nbCol], SrcR_sprite[nbLig][nbCol];
-
+    //placement du pavages du plateau a partir du fichier txt
     for (int i = 0; i < nbLig; i++) {
         for (int j = 0; j < nbCol; j++) {
             SrcR_sprite[i][j].x = objetW / 9 * (((int) tab[i][j] - 48) % 9); // car char en int codé en ascii 0 = 48
@@ -73,18 +77,40 @@ int main(void) {
             DestR_sprite[i][j].h = fenetreH / nbLig; // Hauteur du sprite
         }
     }
+    //placement du rectangle attaque 1
+    SDL_Rect DestR_touche1, SrcR_touche1;
+    SrcR_touche1.x = objetW / 9 * (( 6 ) % 9);
+    SrcR_touche1.y = objetH / 5 * (( 6 ) / 5);
+    SrcR_touche1.w = objetW / 9; // Largeur de l’objet en pixels de la texture
+    SrcR_touche1.h = objetH / 5; // Hauteur de l’objet en pixels de la texture
+    DestR_touche1.x = 7*fenetreW/12;
+    DestR_touche1.y = 4*fenetreH/6 ;
+    DestR_touche1.w = fenetreW/6 ; // Largeur du sprite
+    DestR_touche1.h = fenetreH/20 ; // Hauteur du sprite
 
+    //placement du rectangle attaque 2
+    SDL_Rect DestR_touche2, SrcR_touche2;
+    SrcR_touche2.x = objetW / 9 * (( 6 ) % 9);
+    SrcR_touche2.y = objetH / 5 * (( 6 ) / 5);
+    SrcR_touche2.w = objetW / 9; // Largeur de l’objet en pixels de la texture
+    SrcR_touche2.h = objetH / 5; // Hauteur de l’objet en pixels de la texture
+    DestR_touche2.x = 7*fenetreW/12;
+    DestR_touche2.y = 5*fenetreH/6 ;
+    DestR_touche2.w = fenetreW/6 ; // Largeur du sprite
+    DestR_touche2.h = fenetreH/20 ; // Hauteur du sprite
+
+    //mise en place d'un fond_spécial pour les combats
     SDL_Texture *fond2 = charger_image("combat_ombre.bmp", ecran);
     int objet2W;
     int objet2H;
     //recupère taille objet
     SDL_QueryTexture(fond, NULL, NULL, &objet2W, &objet2H);
     SDL_Rect DestR_fond2, SrcR_fond2;
-
+    //placement du fond dans la fenètre de jeux
     SrcR_fond2.x = 0;
     SrcR_fond2.y = 0;
-    SrcR_fond2.w = objet2W * 10;
-    SrcR_fond2.h = objet2H * 12;
+    SrcR_fond2.w = objet2W;
+    SrcR_fond2.h = objet2H;
     DestR_fond2.x = 0;
     DestR_fond2.y = 0;
     DestR_fond2.w = fenetreW;
@@ -92,98 +118,128 @@ int main(void) {
 
 // Charger l’image avec la transparence
     Uint8 r = 255, g = 255, b = 255;
-
-        //exercice 1 et 2
-        //char** tab=initialiser_tab_2D(5,10);
-
         SDL_Texture *sprites = charger_image_transparente("perso.bmp", ecran, r, g, b);
-//Récupérer largeur et hauteur de la texture avec SDL_QueryTexture
+        //Récupérer largeur et hauteur de la texture avec SDL_QueryTexture
         SDL_Surface *surface = SDL_LoadBMP("perso.bmp");
         Uint32 key = SDL_MapRGB(surface->format, r, g, b);
         SDL_QueryTexture(sprites, &key, NULL, &objetW, &objetH);
-        SDL_Rect DestR_chat, SrcR_chat;
+        SDL_Rect DestR_perso, SrcR_perso;
+        //positionner le sprite du personnage sur la carte
+        SrcR_perso.x = 0;
+        SrcR_perso.y = 0;
+        SrcR_perso.w = objetW / 3; // Largeur de l’objet en pixels de la texture
+        SrcR_perso.h = objetH / 4; // Hauteur de l’objet en pixels de la texture
+        DestR_perso.x = 0;
+        DestR_perso.y = 0;
+        DestR_perso.w = objetW / nbCol * 2; // Largeur du sprite
+        DestR_perso.h = objetH / nbLig / 1.5; // Hauteur du sprite
 
-        SrcR_chat.x = 0;
-        SrcR_chat.y = 0;
-        SrcR_chat.w = objetW / 3; // Largeur de l’objet en pixels de la texture, changer nom
-        SrcR_chat.h = objetH / 4; // Hauteur de l’objet en pixels de la texture, changer nom
-        DestR_chat.x = 0;
-        DestR_chat.y = 0;
-        DestR_chat.w = objetW / nbCol * 2; // Largeur du sprite
-        DestR_chat.h = objetH / nbLig / 1.5; // Hauteur du sprite
-
+        //creation "aléatoire" des monstes
         int nbMonstre=20;
+        //liste qui stocke les ennemis sur la carte
         listeEnnemi ennemis = creationMonstre(nbMonstre);
 
-// Charger l’image avec la transparence
+        // Charger l’image avec la transparence
         r = 255, g = 255, b = 255;
-        SDL_Texture *citrouille = charger_image_transparente("citrouilles.bmp", ecran, r, g, b);
-//récupérer objet (citrouille), sert au placement des monstres
-        int citrouilleW;
-        int citrouilleH;
-        SDL_Surface *surfaceCit = SDL_LoadBMP("citrouilles.bmp");
+        SDL_Texture *smoke = charger_image_transparente("smoke.bmp", ecran, r, g, b);
+        //récupérer objet (fumees), sert visualisation emplacement des monstres
+        int smokeW;
+        int smokeH;
+        //charger l'image permettant la visualisation des monstres
+        SDL_Surface *surfaceCit = SDL_LoadBMP("smoke.bmp");
         Uint32 keyCit = SDL_MapRGB(surfaceCit->format, r, g, b);
-        SDL_QueryTexture(citrouille, &keyCit, NULL, &citrouilleW, &citrouilleH);
-        SDL_Rect SrcRCit[nbMonstre], DestRCit[nbMonstre];
-        listeEnnemi l=ennemis;
-        for (int i=0;i<nbMonstre;i++) {
-            SrcRCit[i].x = 0;
-            SrcRCit[i].y = 0;
-            SrcRCit[i].w = citrouilleW / 12; // Largeur de l’objet en pixels de la texture
-            SrcRCit[i].h = citrouilleH / 4; // Hauteur de l’objet en pixels de la texture
-            DestRCit[i].x = fenetreW / nbCol * l->e->positionX;
-            DestRCit[i].y = fenetreH / nbLig * l->e->positionY;
-            DestRCit[i].w = citrouilleW / nbCol;//largeur de la citrouille
-            DestRCit[i].h = citrouilleH / nbLig * 1.5;//hauteur de la citrouille
-            l=l->next;
-        }
+        SDL_QueryTexture(smoke, &keyCit, NULL, &smokeW, &smokeH);
+        SDL_Rect SrcRSmo[nbMonstre], DestRSmo[nbMonstre];
+        spritesEnnemis(ennemis,nbMonstre,SrcRSmo,DestRSmo,smokeW,smokeH,fenetreW,fenetreH,nbCol,nbLig);
+
         //Variable du jeu
-        int etat = 0;
-        monstre monMonstre = creerMonstre(150, 5, 10,0,0);
+        //int etat = 0;
+        bool encombat=false;
+        int action=0;
+        //créer mon Monstre qui combat les ennemis
+        monstre monMonstre = creerMonstre(170, 5, 10,0,0);
 
     // Boucle principale
 
         while (!terminer) {
 
-            if (collisionListe(monMonstre, ennemis)) etat = 1;
-            else etat=0;
+            if (collisionListe(monMonstre, ennemis)) encombat = true;
+            else encombat=false;
             SDL_RenderClear(ecran);
 
             for (int i = 0; i < nbLig; i++) {
                 for (int j = 0; j < nbCol; j++) {
-                    if (etat == 0) SDL_RenderCopy(ecran, fond, &SrcR_sprite[i][j], &DestR_sprite[i][j]);
-                    else SDL_RenderCopy(ecran, fond2, &SrcR_fond2, &DestR_fond2);
+                    if (!encombat) {
+                        SDL_RenderCopy(ecran, fond, &SrcR_sprite[i][j], &DestR_sprite[i][j]);
+                        spritesEnnemis(ennemis,nbMonstre,SrcRSmo,DestRSmo,smokeW,smokeH,fenetreW,fenetreH,nbCol,nbLig);
+                        for (int i=0;i<nbMonstre;i++) {
+                            SDL_RenderCopy(ecran, smoke, &SrcRSmo[i], &DestRSmo[i]);
+                        }
+                        SDL_RenderCopy(ecran, sprites, &SrcR_perso, &DestR_perso);
+                    }
+                    else {
+                        SDL_RenderCopy(ecran, fond2, &SrcR_fond2, &DestR_fond2);
+                        SDL_RenderCopy(ecran, fond, &SrcR_touche1, &DestR_touche1);
+                        SDL_RenderCopy(ecran, fond, &SrcR_touche2, &DestR_touche2);
+                    }
                 }
             }
-            if (etat == 1) {
-                bool resultat = combat(monMonstre, ennemis); //liste entière au lieu de ennemis
-
-                if (!resultat) {
+            if (encombat) {
+                encombat=combat(monMonstre, ennemis,action);
+                if (!(monMonstre->pv>0)) {
                     printf("Vous êtes mort !\n");
                     terminer = true;
                 } else {
                     printf("Il te reste %d pv.\n", monMonstre->pv);
                     if (ennemis->next == NULL) printf("Vous avez gagnez!");
                 }
-                ennemis=cleanEnnemi(monMonstre,ennemis);
+                ennemis=cleanEnnemi(monMonstre,ennemis,&nbMonstre);
+                action=0;
             }
-            for (int i=0;i<nbMonstre;i++) {
-                SDL_RenderCopy(ecran, citrouille, &SrcRCit[i], &DestRCit[i]);
-            }
-            SDL_RenderCopy(ecran, sprites, &SrcR_chat, &DestR_chat);
-            while (SDL_PollEvent(&evenements)) {
 
-                switch (evenements.type) {
-                    case SDL_QUIT:
-                        terminer = true;
-                        break;
-                    case SDL_KEYUP:
-                        //case SDL_KEYDOWN:
-                        etat = deplacement(monMonstre,&evenements, &DestR_chat, &SrcR_chat, tab, fenetreW, fenetreH, nbCol, nbLig,
-                                           objetH, objetW);
-                        if ((evenements.key.keysym.sym == SDLK_q) ||
-                            (evenements.key.keysym.sym == SDLK_ESCAPE))
+            while (SDL_PollEvent(&evenements)) {
+                if (encombat) {
+                    int x,y;
+                    switch (evenements.type) {
+                        case SDL_MOUSEBUTTONDOWN:
+                            switch(evenements.button.button)
+                            {
+                                case SDL_BUTTON_LEFT:
+                                    SDL_GetMouseState(&x,&y);
+                                    if (x>=7*fenetreW/12 && x<=7*fenetreW/12+fenetreW/6 && y>=4*fenetreH/6 && y<=4*fenetreH/6+fenetreH/20){
+                                        action=1;
+                                    }
+                                    else if (x>=7*fenetreW/12 && x<=7*fenetreW/12+fenetreW/6 && y>=5*fenetreH/6 && y<=5*fenetreH/6+fenetreH/20){
+                                        action=2;
+                                    }
+                                    break;
+                                case SDL_BUTTON_RIGHT:
+                                    encombat=false;
+                                    (SrcR_perso).x = 0;
+                                    (SrcR_perso).y = objetH/2;
+                                    if ((DestR_perso).x + fenetreW / nbCol < fenetreW &&
+                                        (tab[(DestR_perso).y / (fenetreH / nbLig)][(DestR_perso).x / (fenetreW / nbCol) + 1] == '0'||tab[(DestR_perso).y / (fenetreH / nbLig)][(DestR_perso).x / (fenetreW / nbCol) + 1] == '4')) {
+                                        (DestR_perso).x = ((DestR_perso).x + fenetreW / nbCol);
+                                        monMonstre->positionX++;
+                                    }
+                                    break;
+                            }
+                            break;
+                    }
+                } else {
+                    switch (evenements.type) {
+                        case SDL_QUIT:
                             terminer = true;
+                            break;
+                        case SDL_KEYUP:
+                            //case SDL_KEYDOWN:
+                            deplacement(monMonstre, &evenements, &DestR_perso, &SrcR_perso, tab, fenetreW,
+                                               fenetreH, nbCol, nbLig,
+                                               objetH, objetW);
+                            if ((evenements.key.keysym.sym == SDLK_q) ||
+                                (evenements.key.keysym.sym == SDLK_ESCAPE))
+                                terminer = true;
+                    }
                 }
             }
             SDL_RenderPresent(ecran);

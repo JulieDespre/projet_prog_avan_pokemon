@@ -166,41 +166,41 @@ SDL_Texture* charger_texte(const char* message, SDL_Renderer* renderer, TTF_Font
     SDL_CreateTextureFromSurface(renderer,surface);
 }
 
-int deplacement(monstre m,SDL_Event *evenements,SDL_Rect *DestR_chat,SDL_Rect *SrcR_chat,char** tab,int fenetreW,int fenetreH,int nbCol,int nbLig,int objetH,int objetW){
+int deplacement(monstre m,SDL_Event *evenements,SDL_Rect *DestR_perso,SDL_Rect *SrcR_perso,char** tab,int fenetreW,int fenetreH,int nbCol,int nbLig,int objetH,int objetW){
     switch ((*evenements).key.keysym.sym) {
         case SDLK_RIGHT:
-            (*SrcR_chat).x = 0;
-            (*SrcR_chat).y = objetH/2;
-            if ((*DestR_chat).x + fenetreW / nbCol < fenetreW &&
-                    (tab[(*DestR_chat).y / (fenetreH / nbLig)][(*DestR_chat).x / (fenetreW / nbCol) + 1] == '0'||tab[(*DestR_chat).y / (fenetreH / nbLig)][(*DestR_chat).x / (fenetreW / nbCol) + 1] == '4')) {
-                (*DestR_chat).x = ((*DestR_chat).x + fenetreW / nbCol);
+            (*SrcR_perso).x = 0;
+            (*SrcR_perso).y = objetH/2;
+            if ((*DestR_perso).x + fenetreW / nbCol < fenetreW &&
+                    (tab[(*DestR_perso).y / (fenetreH / nbLig)][(*DestR_perso).x / (fenetreW / nbCol) + 1] == '0'||tab[(*DestR_perso).y / (fenetreH / nbLig)][(*DestR_perso).x / (fenetreW / nbCol) + 1] == '4')) {
+                (*DestR_perso).x = ((*DestR_perso).x + fenetreW / nbCol);
                 m->positionX++;
             }
             break;
         case SDLK_DOWN:
-            (*SrcR_chat).x = 0;
-            (*SrcR_chat).y = 0;
-            if ((*DestR_chat).y + fenetreH / nbLig < fenetreH &&
-                    (tab[(*DestR_chat).y / (fenetreH / nbLig) + 1][(*DestR_chat).x / (fenetreW / nbCol)] == '0'||tab[(*DestR_chat).y / (fenetreH / nbLig) + 1][(*DestR_chat).x / (fenetreW / nbCol)] == '4')) {
-                (*DestR_chat).y = ((*DestR_chat).y + fenetreH / nbLig);
+            (*SrcR_perso).x = 0;
+            (*SrcR_perso).y = 0;
+            if ((*DestR_perso).y + fenetreH / nbLig < fenetreH &&
+                    (tab[(*DestR_perso).y / (fenetreH / nbLig) + 1][(*DestR_perso).x / (fenetreW / nbCol)] == '0'||tab[(*DestR_perso).y / (fenetreH / nbLig) + 1][(*DestR_perso).x / (fenetreW / nbCol)] == '4')) {
+                (*DestR_perso).y = ((*DestR_perso).y + fenetreH / nbLig);
                 m->positionY++;
             }
             break;
         case SDLK_LEFT:
-            (*SrcR_chat).x = 0;
-            (*SrcR_chat).y = objetH/4;
-            if ((*DestR_chat).x - fenetreW / nbCol >= 0 &&
-                    (tab[(*DestR_chat).y / (fenetreH / nbLig)][(*DestR_chat).x / (fenetreW / nbCol) - 1] == '0'||tab[(*DestR_chat).y / (fenetreH / nbLig)][(*DestR_chat).x / (fenetreW / nbCol) - 1] == '4')) {
-                (*DestR_chat).x = ((*DestR_chat).x - fenetreW / nbCol);
+            (*SrcR_perso).x = 0;
+            (*SrcR_perso).y = objetH/4;
+            if ((*DestR_perso).x - fenetreW / nbCol >= 0 &&
+                    (tab[(*DestR_perso).y / (fenetreH / nbLig)][(*DestR_perso).x / (fenetreW / nbCol) - 1] == '0'||tab[(*DestR_perso).y / (fenetreH / nbLig)][(*DestR_perso).x / (fenetreW / nbCol) - 1] == '4')) {
+                (*DestR_perso).x = ((*DestR_perso).x - fenetreW / nbCol);
                 m->positionX--;
             }
             break;
         case SDLK_UP:
-            (*SrcR_chat).x = 0;
-            (*SrcR_chat).y = objetH/2+objetH/4;
-            if ((*DestR_chat).y - fenetreH / nbLig >= 0 &&
-                    (tab[(*DestR_chat).y / (fenetreH / nbLig) - 1][(*DestR_chat).x / (fenetreW / nbCol)] == '0' || tab[(*DestR_chat).y / (fenetreH / nbLig) - 1][(*DestR_chat).x / (fenetreW / nbCol)] == '4')){
-                (*DestR_chat).y = ((*DestR_chat).y - fenetreH / nbLig);
+            (*SrcR_perso).x = 0;
+            (*SrcR_perso).y = objetH/2+objetH/4;
+            if ((*DestR_perso).y - fenetreH / nbLig >= 0 &&
+                    (tab[(*DestR_perso).y / (fenetreH / nbLig) - 1][(*DestR_perso).x / (fenetreW / nbCol)] == '0' || tab[(*DestR_perso).y / (fenetreH / nbLig) - 1][(*DestR_perso).x / (fenetreW / nbCol)] == '4')){
+                (*DestR_perso).y = ((*DestR_perso).y - fenetreH / nbLig);
                 m->positionY--;
             }
             break;

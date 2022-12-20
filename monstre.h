@@ -7,6 +7,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include <stdbool.h>
+#include <SDL2/SDL.h>
 
 typedef struct monstre * monstre;
 
@@ -28,11 +29,12 @@ struct Ennemi{
 listeEnnemi creerListeEnnemi(monstre e);
 listeEnnemi creerListeEnnemiVide();
 void ajouterEnnemi(listeEnnemi l,monstre e);
-listeEnnemi cleanEnnemi(monstre m1,listeEnnemi l);
+listeEnnemi cleanEnnemi(monstre m1,listeEnnemi l,int* nbMonstre);
 monstre creerMonstre(int p,int d, int a,int pX,int pY);
-bool combat(monstre m1,listeEnnemi e);
+bool combat(monstre m1,listeEnnemi e,int action);
 bool collision(monstre m1,monstre m2);
 bool collisionListe(monstre m1,listeEnnemi l);
 listeEnnemi creationMonstre(int nbMonstre);
+void spritesEnnemis(listeEnnemi ennemis,int nbMonstre,SDL_Rect* SrcRCit,SDL_Rect* DestRCit,int citrouilleW,int citrouilleH,int fenetreW,int fenetreH,int nbCol,int nbLig);
 
 #endif //MAIN_MONSTRE_H

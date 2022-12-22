@@ -17,6 +17,7 @@ struct monstre{
     int attaque;
     int positionX;
     int positionY;
+    int lvl;
 };
 
 typedef struct Ennemi * listeEnnemi;
@@ -34,7 +35,7 @@ monstre creerMonstre(int p,int d, int a,int pX,int pY);
 bool combat(monstre m1,listeEnnemi e,int action);
 bool collision(monstre m1,monstre m2);
 bool collisionListe(monstre m1,listeEnnemi l);
-listeEnnemi creationMonstre(int nbMonstre);
+listeEnnemi creationMonstre(int nbMonstre,char** tab,int nbLig,int nbCol);
 void spritesEnnemis(listeEnnemi ennemis,int nbMonstre,SDL_Rect* SrcRCit,SDL_Rect* DestRCit,int citrouilleW,int citrouilleH,int fenetreW,int fenetreH,int nbCol,int nbLig);
 
 #endif //MAIN_MONSTRE_H

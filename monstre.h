@@ -30,7 +30,7 @@ struct Ennemi{
 listeEnnemi creerListeEnnemi(monstre e);
 listeEnnemi creerListeEnnemiVide();
 void ajouterEnnemi(listeEnnemi l,monstre e);
-listeEnnemi cleanEnnemi(monstre m1,listeEnnemi l,int* nbMonstre);
+listeEnnemi cleanEnnemi(monstre m1,listeEnnemi l,int* nbMonstre,int* ecr);
 monstre creerMonstre(int p,int d, int a,int pX,int pY);
 bool combat(monstre m1,listeEnnemi e,int action);
 bool collision(monstre m1,monstre m2);

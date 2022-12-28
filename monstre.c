@@ -25,11 +25,10 @@ listeEnnemi creationMonstre(int nbMonstre,char** tab,int nbLig,int nbCol){//nbli
     listeEnnemi l=creerListeEnnemi(monstre1);
     for(int i = 1; i<nbMonstre; i++){
         int pX=(rand()%nbCol),pY=(rand()%nbLig);
-        while (tab[pY][pX]!='0'&&tab[pY][pX]!='4'){
+        while ((tab[pY][pX]!='0'&&tab[pY][pX]!='4')||pX+pY==0){
             pX=(rand()%nbCol);
             pY=(rand()%nbLig);
         }
-        printf("!!:%d %d\n",pX,pY);
         monstre monMonstre= creerMonstre((rand()%30)+10,(rand()%5)+1,(rand()%6)+6,pX,pY);
         ajouterEnnemi(l,monMonstre);
     }
@@ -37,13 +36,14 @@ listeEnnemi creationMonstre(int nbMonstre,char** tab,int nbLig,int nbCol){//nbli
 }
 
 //enlève monstre de la liste et désalloue la mémoire allouée lors de la creation du monstre
-listeEnnemi cleanEnnemi(monstre m1,listeEnnemi l,int* n){
+listeEnnemi cleanEnnemi(monstre m1,listeEnnemi l,int* n,int* ecr){
     if (l==NULL) return NULL;
     else if (!collision(m1,l->e)) {
-        l->next = cleanEnnemi(m1,l->next,n);
+        l->next = cleanEnnemi(m1,l->next,n,ecr);
         return l;
     }
     else if (l->e->pv<=0){//lorsque le monstre est mort
+        if (l->e->def>9) *ecr=2;
         (*n)--;
         listeEnnemi laux=l->next;
         free(l);

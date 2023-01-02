@@ -63,11 +63,11 @@ bool combat(monstre m1,listeEnnemi l,int action){// premiere étape
     //attaque 1 "classique"
     if (action==1){
         if (l->e->attaque-(m1->def+m1->lvl/2)>0) m1->pv-=l->e->attaque-(m1->def+m1->lvl/2);//mon monstre perd pv attaque du monstre - défense de mon monstre
-        if ((m1->attaque+m1->lvl)-l->e->def>0) l->e->pv-=(m1->attaque+m1->lvl)-l->e->def;//attaque monstre prenant en compte sa défense
+        if ((m1->attaque+m1->lvl)-l->e->def>0) l->e->pv-=(m1->attaque+m1->lvl)-l->e->def;
     }
     else if (action ==2){
         m1->pv-=l->e->attaque; //pv mon monstre - attaque ennemi
-        l->e->pv-=2*(m1->attaque+m1->lvl)-l->e->def;//prete pv du monstre 2*attque de mon monstre - def du monstre
+        l->e->pv-=2*(m1->attaque+m1->lvl)-l->e->def;//prete pv du monstre 2*attque de mon monstre ne prend pas notre def en compte
     }
     if (m1->pv>0 && l->e->pv>0) return true;//continu le combat tant que mon monstre ou l'ennemi on des pv
     else return false;

@@ -80,11 +80,11 @@ int main(void) {
     }
     //placement du rectangle attaque 1
     Uint8 r = 255, g = 255, b = 255;
-    SDL_Texture* monMons = charger_image_transparente("fantome_attaque.bmp", ecran,r,g,b);
+    SDL_Texture* monMons = charger_image_transparente("mon_fantome.bmp", ecran,r,g,b);
 //Récupérer largeur et hauteur de la texture avec SDL_QueryTexture
     int monstW;
     int monstH;
-    SDL_Surface* surfaceMons1 = SDL_LoadBMP("fantome_attaque.bmp");
+    SDL_Surface* surfaceMons1 = SDL_LoadBMP("mon_fantome.bmp");
     Uint32 key = SDL_MapRGB(surfaceMons1->format,r,g,b);
     SDL_QueryTexture(monMons,&key,NULL,&monstW,&monstH);
     SDL_Rect DestR_monMons1, SrcR_monMons1;
@@ -96,6 +96,7 @@ int main(void) {
     DestR_monMons1.y = fenetreH/2-100 ;
     DestR_monMons1.w = fenetreW/4 ; // Largeur du sprite
     DestR_monMons1.h = fenetreH/3 ; // Hauteur du sprite
+
     SDL_Texture* atta1 = charger_image_transparente("attaque1.bmp", ecran,r,g,b);
 //Récupérer largeur et hauteur de la texture avec SDL_QueryTexture
     int attaW;
@@ -268,12 +269,12 @@ int main(void) {
         DestRBosscb.w = fenetreW / 4 ;//largeur de la smoke
         DestRBosscb.h = fenetreH / 3 ;//hauteur de la smoke
 
-        SDL_Texture *smokecb = charger_image_transparente("monstre.bmp", ecran, r, g, b);
+        SDL_Texture *smokecb = charger_image_transparente("ennemi.bmp", ecran, r, g, b);
         //récupérer objet (fumees), sert visualisation emplacement des monstres
         int smokecbW;
         int smokecbH;
         //charger l'image permettant la visualisation des monstres
-        SDL_Surface *surfaceCb = SDL_LoadBMP("monstre.bmp");
+        SDL_Surface *surfaceCb = SDL_LoadBMP("ennemi.bmp");
         Uint32 keyCb = SDL_MapRGB(surfaceCb->format, r, g, b);
         SDL_QueryTexture(smokecb, &keyCb, NULL, &smokecbW, &smokecbH);
         SDL_Rect SrcRSmocb, DestRSmocb;
@@ -339,7 +340,7 @@ int main(void) {
                     SDL_RenderCopy(ecran, fondgo, &SrcR_fondgo, &DestR_fondgo);
                 }
             }
-            else {
+            else {//affichage encombat
                 SDL_RenderCopy(ecran, fond2, &SrcR_fond2, &DestR_fond2);
                 SDL_RenderCopy(ecran, monMons, &SrcR_monMons1, &DestR_monMons1);
                 if (ennemis->e->positionX==monMonstre->positionX && ennemis->e->positionY==monMonstre->positionY) {

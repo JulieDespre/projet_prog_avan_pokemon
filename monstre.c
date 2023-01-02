@@ -170,16 +170,20 @@ listeEnnemi load(int* ecr,monstre m1,int* nb){
     m1->positionY=fgetc(fichier);
     m1->lvl=fgetc(fichier);
     int c = fgetc(fichier);
-    monstre m = creerMonstre(c,fgetc(fichier),fgetc(fichier),fgetc(fichier),fgetc(fichier));
+    int d=fgetc(fichier);
+    int a=fgetc(fichier);
+    int pX=fgetc(fichier);
+    int pY=fgetc(fichier);
+    monstre m = creerMonstre(c,d,a,pX,pY);
     c = fgetc(fichier);
     listeEnnemi  l = creerListeEnnemi(m);
     printf("%d\n",c);
     *nb=1;
     while (c!=255 && c!=0){
-        int d=fgetc(fichier);
-        int a=fgetc(fichier);
-        int pX=fgetc(fichier);
-        int pY=fgetc(fichier);
+        d=fgetc(fichier);
+        a=fgetc(fichier);
+        pX=fgetc(fichier);
+        pY=fgetc(fichier);
         monstre m = creerMonstre(c,d,a,pX,pY);
         ajouterEnnemi(l,m);
         c = fgetc(fichier);

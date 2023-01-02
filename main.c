@@ -80,12 +80,28 @@ int main(void) {
     }
     //placement du rectangle attaque 1
     Uint8 r = 255, g = 255, b = 255;
+    SDL_Texture* monMons = charger_image_transparente("fantome_attaque.bmp", ecran,r,g,b);
+//Récupérer largeur et hauteur de la texture avec SDL_QueryTexture
+    int monstW;
+    int monstH;
+    SDL_Surface* surfaceMons1 = SDL_LoadBMP("fantome_attaque.bmp");
+    Uint32 key = SDL_MapRGB(surfaceMons1->format,r,g,b);
+    SDL_QueryTexture(monMons,&key,NULL,&monstW,&monstH);
+    SDL_Rect DestR_monMons1, SrcR_monMons1;
+    SrcR_monMons1.x = 0;
+    SrcR_monMons1.y = 0;
+    SrcR_monMons1.w = monstW; // Largeur de l’objet en pixels de la texture
+    SrcR_monMons1.h = monstH; // Hauteur de l’objet en pixels de la texture
+    DestR_monMons1.x = 2*fenetreW/12;
+    DestR_monMons1.y = fenetreH/2-100 ;
+    DestR_monMons1.w = fenetreW/4 ; // Largeur du sprite
+    DestR_monMons1.h = fenetreH/3 ; // Hauteur du sprite
     SDL_Texture* atta1 = charger_image_transparente("attaque1.bmp", ecran,r,g,b);
 //Récupérer largeur et hauteur de la texture avec SDL_QueryTexture
     int attaW;
     int attaH;
     SDL_Surface* surface1 = SDL_LoadBMP("attaque1.bmp");
-    Uint32 key = SDL_MapRGB(surface1->format,r,g,b);
+    key = SDL_MapRGB(surface1->format,r,g,b);
     SDL_QueryTexture(atta1,&key,NULL,&attaW,&attaH);
     SDL_Rect DestR_touche1, SrcR_touche1;
     SrcR_touche1.x = 0;
@@ -129,6 +145,20 @@ int main(void) {
     DestR_fond2.y = 0;
     DestR_fond2.w = fenetreW;
     DestR_fond2.h = fenetreH;
+
+    SDL_Texture *fonddeb = charger_image("debut_jeux.bmp", ecran);
+    //recupère taille objet
+    SDL_QueryTexture(fonddeb, NULL, NULL, &objet2W, &objet2H);
+    SDL_Rect DestR_fonddeb, SrcR_fonddeb;
+    //placement du fond dans la fenètre de jeux
+    SrcR_fonddeb.x = 0;
+    SrcR_fonddeb.y = 0;
+    SrcR_fonddeb.w = objet2W;
+    SrcR_fonddeb.h = objet2H;
+    DestR_fonddeb.x = 0;
+    DestR_fonddeb.y = 0;
+    DestR_fonddeb.w = fenetreW;
+    DestR_fonddeb.h = fenetreH;
 
     SDL_Texture *fondwin = charger_image("fond_win.bmp", ecran);
     //recupère taille objet
@@ -216,7 +246,7 @@ int main(void) {
         int bossW;
         int bossH;
         //charger l'image permettant la visualisation des monstres
-        SDL_Surface *surfaceBoss = SDL_LoadBMP("smoke.bmp");
+        SDL_Surface *surfaceBoss = SDL_LoadBMP("boss.bmp");
         Uint32 keyBoss = SDL_MapRGB(surfaceBoss->format, r, g, b);
         SDL_QueryTexture(boss, &keyBoss, NULL, &bossW, &bossH);
         SDL_Rect SrcRBoss, DestRBoss;
@@ -228,6 +258,33 @@ int main(void) {
         DestRBoss.y = fenetreH / nbLig * ennemis->e->positionY+10;
         DestRBoss.w = fenetreW / nbCol ;//largeur de la smoke
         DestRBoss.h = fenetreH / nbLig ;//hauteur de la smoke
+        SDL_Rect SrcRBosscb, DestRBosscb;
+        SrcRBosscb.x = 0;
+        SrcRBosscb.y = 0;
+        SrcRBosscb.w = bossW; // Largeur de l’objet en pixels de la texture
+        SrcRBosscb.h = bossH; // Hauteur de l’objet en pixels de la texture
+        DestRBosscb.x = fenetreW / 2+60;
+        DestRBosscb.y = fenetreH / 6-50;
+        DestRBosscb.w = fenetreW / 4 ;//largeur de la smoke
+        DestRBosscb.h = fenetreH / 3 ;//hauteur de la smoke
+
+        SDL_Texture *smokecb = charger_image_transparente("monstre.bmp", ecran, r, g, b);
+        //récupérer objet (fumees), sert visualisation emplacement des monstres
+        int smokecbW;
+        int smokecbH;
+        //charger l'image permettant la visualisation des monstres
+        SDL_Surface *surfaceCb = SDL_LoadBMP("monstre.bmp");
+        Uint32 keyCb = SDL_MapRGB(surfaceCb->format, r, g, b);
+        SDL_QueryTexture(smokecb, &keyCb, NULL, &smokecbW, &smokecbH);
+        SDL_Rect SrcRSmocb, DestRSmocb;
+        SrcRSmocb.x = 0;
+        SrcRSmocb.y = 0;
+        SrcRSmocb.w = smokecbW; // Largeur de l’objet en pixels de la texture
+        SrcRSmocb.h = smokecbH; // Hauteur de l’objet en pixels de la texture
+        DestRSmocb.x = fenetreW / 2+60;
+        DestRSmocb.y = fenetreH / 6-50;
+        DestRSmocb.w = fenetreW / 4 ;//largeur de la smoke
+        DestRSmocb.h = fenetreH / 3 ;//hauteur de la smoke
 
         //Variable du jeu
         //int etat = 0;
@@ -246,7 +303,10 @@ int main(void) {
             SDL_RenderClear(ecran);
 
             if (!encombat) {
-                if (ecr==1) {
+                if (ecr==0){
+                    SDL_RenderCopy(ecran, fonddeb, &SrcR_fonddeb, &DestR_fonddeb);
+                }
+                else if (ecr==1) {
                     for (int i = 0; i < nbLig; i++) {
                         for (int j = 0; j < nbCol; j++) {
                             SDL_RenderCopy(ecran, fond, &SrcR_sprite[i][j], &DestR_sprite[i][j]);
@@ -281,6 +341,12 @@ int main(void) {
             }
             else {
                 SDL_RenderCopy(ecran, fond2, &SrcR_fond2, &DestR_fond2);
+                SDL_RenderCopy(ecran, monMons, &SrcR_monMons1, &DestR_monMons1);
+                if (ennemis->e->positionX==monMonstre->positionX && ennemis->e->positionY==monMonstre->positionY) {
+                    SDL_RenderCopy(ecran, boss, &SrcRBosscb, &DestRBosscb);
+                } else {
+                    SDL_RenderCopy(ecran, smokecb, &SrcRSmocb, &DestRSmocb);
+                }
                 SDL_RenderCopy(ecran, atta1, &SrcR_touche1, &DestR_touche1);
                 SDL_RenderCopy(ecran, atta2, &SrcR_touche2, &DestR_touche2);
             }
@@ -376,6 +442,7 @@ int main(void) {
                                 else if (evenements.key.keysym.sym == SDLK_l){
                                     ennemis=load(&ecr,monMonstre,&nbMonstre);
                                     spritesEnnemis(ennemis,nbMonstre,SrcRSmo,DestRSmo,smokeW,smokeH,fenetreW,fenetreH,nbCol,nbLig);
+                                    DestRBoss.x=nbCol/ecr;
                                     DestR_perso.x = (fenetreW / nbCol)*monMonstre->positionX;
                                     DestR_perso.y = (fenetreH / nbLig)*monMonstre->positionY;
                                     DestR_perso.w = fenetreW / nbCol; // Largeur du sprite
@@ -401,6 +468,8 @@ int main(void) {
                             else if (evenements.key.keysym.sym == SDLK_l){
                                 ennemis=load(&ecr,monMonstre,&nbMonstre);
                                 spritesEnnemis(ennemis,nbMonstre,SrcRSmo,DestRSmo,smokeW,smokeH,fenetreW,fenetreH,nbCol,nbLig);
+                                DestRBoss.x=(fenetreW / nbCol)*((nbCol-1)/ecr);
+                                printf("%d\n",ennemis->e->positionX);
                                 DestR_perso.x = (fenetreW / nbCol)*monMonstre->positionX;
                                 DestR_perso.y = (fenetreH / nbLig)*monMonstre->positionY;
                                 DestR_perso.w = fenetreW / nbCol; // Largeur du sprite

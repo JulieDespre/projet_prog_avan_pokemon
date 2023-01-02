@@ -30,12 +30,12 @@ struct Ennemi{
 listeEnnemi creerListeEnnemi(monstre e);
 listeEnnemi creerListeEnnemiVide();
 void ajouterEnnemi(listeEnnemi l,monstre e);
-listeEnnemi cleanEnnemi(monstre m1,listeEnnemi l,int* nbMonstre,int* ecr);
+listeEnnemi cleanEnnemi(monstre m1,listeEnnemi l,int* nbMonstre,int* ecr,SDL_Rect* DestR_perso);
 monstre creerMonstre(int p,int d, int a,int pX,int pY);
 bool combat(monstre m1,listeEnnemi e,int action);
 bool collision(monstre m1,monstre m2);
-bool collisionListe(monstre m1,listeEnnemi l);
-listeEnnemi creationMonstre(int nbMonstre,char** tab,int nbLig,int nbCol);
+bool collisionListe(monstre m1,listeEnnemi l,char* msg);
+listeEnnemi creationMonstre(int nbMonstre,char** tab,int nbLig,int nbCol,int diff);
 void spritesEnnemis(listeEnnemi ennemis,int nbMonstre,SDL_Rect* SrcRCit,SDL_Rect* DestRCit,int citrouilleW,int citrouilleH,int fenetreW,int fenetreH,int nbCol,int nbLig);
 
 #endif //MAIN_MONSTRE_H

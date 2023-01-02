@@ -31,7 +31,7 @@ int main(void) {
 
 // Créer la fenêtre
     // dimension de la fenetre de jeux dimension en fonction du nombre de cases du fichier txt
-    int fenetreW = nbCol*30, fenetreH = nbLig*40;
+    int fenetreW = nbCol*60, fenetreH = nbLig*80;
     fenetre = SDL_CreateWindow("Fenetre SDL", SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, fenetreW, fenetreH, SDL_WINDOW_MINIMIZED);
     if (fenetre == NULL) // En cas d’erreur
     {
@@ -54,9 +54,9 @@ int main(void) {
     for (int i = 0; i < nbLig; i++) {
         for (int j = 0; j < nbCol; j++) {
             SrcR_sprite[i][j].x = objetW / 9 * (((int) tab[i][j] - 48) % 9); // car char en int codé en ascii 0 = 48
-            SrcR_sprite[i][j].y = objetH / 5 * (((int) tab[i][j] - 48) / 5);
-            SrcR_sprite[i][j].w = objetW / 9; // Largeur de l’objet en pixels de la texture
-            SrcR_sprite[i][j].h = objetH / 5; // Hauteur de l’objet en pixels de la texture
+            SrcR_sprite[i][j].y = objetH / 4 * (((int) tab[i][j] - 48) / 9);
+            SrcR_sprite[i][j].w = objetW / 9.5; // Largeur de l’objet en pixels de la texture
+            SrcR_sprite[i][j].h = objetH / 4.1; // Hauteur de l’objet en pixels de la texture
             DestR_sprite[i][j].x = fenetreW / nbCol * j;
             DestR_sprite[i][j].y = fenetreH / nbLig * i;
             DestR_sprite[i][j].w = fenetreW / nbCol; // Largeur du sprite
@@ -64,14 +64,14 @@ int main(void) {
         }
     }
 
-    SDL_Rect DestR_sprite2[nbLig][nbCol], SrcR_sprite2[nbLig][nbCol];
+    SDL_Rect DestR_sprite2[nbLig2][nbCol2], SrcR_sprite2[nbLig2][nbCol2];
     //placement du pavages du plateau a partir du fichier txt
     for (int i = 0; i < nbLig2; i++) {
         for (int j = 0; j < nbCol2; j++) {
             SrcR_sprite2[i][j].x = objetW / 9 * (((int) tab2[i][j] - 48) % 9); // car char en int codé en ascii 0 = 48
-            SrcR_sprite2[i][j].y = objetH / 5 * (((int) tab2[i][j] - 48) / 5);
-            SrcR_sprite2[i][j].w = objetW / 9; // Largeur de l’objet en pixels de la texture
-            SrcR_sprite2[i][j].h = objetH / 5; // Hauteur de l’objet en pixels de la texture
+            SrcR_sprite2[i][j].y = objetH / 4 * (((int) tab2[i][j] - 48) / 9);
+            SrcR_sprite2[i][j].w = objetW / 9.5; // Largeur de l’objet en pixels de la texture
+            SrcR_sprite2[i][j].h = objetH / 4.1; // Hauteur de l’objet en pixels de la texture
             DestR_sprite2[i][j].x = fenetreW / nbCol2 * j;
             DestR_sprite2[i][j].y = fenetreH / nbLig2 * i;
             DestR_sprite2[i][j].w = fenetreW / nbCol2; // Largeur du sprite
@@ -130,6 +130,7 @@ int main(void) {
     DestR_fond2.w = fenetreW;
     DestR_fond2.h = fenetreH;
 
+    // suivi des points de vie
     TTF_Init();
     TTF_Font *font = TTF_OpenFont("./angelina.TTF",28);
     SDL_Color color = {255,255,255,0};
@@ -141,6 +142,12 @@ int main(void) {
     text_pos.y = fenetreH-100;
     text_pos.w = objetW; // Largeur du texte en pixels (à récupérer)
     text_pos.h = objetH; // Hauteur du texte en pixels (à récupérer)
+
+    SDL_Rect text_pos2; // Position du texte
+    text_pos2.x = 3*fenetreW/5-40;
+    text_pos2.y = fenetreH/2;
+    text_pos2.w = objetW; // Largeur du texte en pixels (à récupérer)
+    text_pos2.h = objetH; // Hauteur du texte en pixels (à récupérer)
 
 // Charger l’image avec la transparence pour le personnage
     //Uint8 r = 255, g = 255, b = 255;
@@ -161,9 +168,9 @@ int main(void) {
         DestR_perso.h = fenetreH / nbLig ; // Hauteur du sprite
 
         //creation "aléatoire" des monstes
-        int nbMonstre=20; // peut être mis en constante, varie selon les niveau ?
+        int nbMonstre=9; // peut être mis en constante, varie selon les niveau ?
         //liste qui stocke les ennemis sur la carte
-        listeEnnemi ennemis = creationMonstre(nbMonstre,tab,nbLig,nbCol);
+        listeEnnemi ennemis = creationMonstre(nbMonstre,tab,nbLig,nbCol,1);
         // Charger l’image avec la transparence
         r = 255, g = 255, b = 255;
         SDL_Texture *smoke = charger_image_transparente("smoke.bmp", ecran, r, g, b);
@@ -183,12 +190,13 @@ int main(void) {
         int ecr=1;
         int action=0;
         //créer mon Monstre qui combat les ennemis
-        monstre monMonstre = creerMonstre(170, 5, 10,0,0);
+        monstre monMonstre = creerMonstre(200, 5, 10,0,0);
+        char msg2[100]="UwU";
 
     // Boucle principale
         while (!terminer) {
 
-            if (collisionListe(monMonstre, ennemis)) encombat = true;
+            if (collisionListe(monMonstre, ennemis,msg2)) encombat = true;
             else encombat=false;
             SDL_RenderClear(ecran);
 
@@ -197,28 +205,25 @@ int main(void) {
                     for (int i = 0; i < nbLig; i++) {
                         for (int j = 0; j < nbCol; j++) {
                             SDL_RenderCopy(ecran, fond, &SrcR_sprite[i][j], &DestR_sprite[i][j]);
-                            spritesEnnemis(ennemis, nbMonstre, SrcRSmo, DestRSmo, smokeW, smokeH, fenetreW,
-                                           fenetreH,
-                                           nbCol, nbLig);
-                            for (int i = 0; i < nbMonstre; i++) {
-                                SDL_RenderCopy(ecran, smoke, &SrcRSmo[i], &DestRSmo[i]);
-                            }
-                            SDL_RenderCopy(ecran, sprites, &SrcR_perso, &DestR_perso);
                         }
                     }
+                    spritesEnnemis(ennemis, nbMonstre, SrcRSmo, DestRSmo, smokeW, smokeH, fenetreW,fenetreH,nbCol, nbLig);
+                    for (int i = 0; i < nbMonstre; i++) {
+                        SDL_RenderCopy(ecran, smoke, &SrcRSmo[i], &DestRSmo[i]);
+                    }
+                    SDL_RenderCopy(ecran, sprites, &SrcR_perso, &DestR_perso);
                 }
                 else if (ecr==2) {
                     for (int i = 0; i < nbLig2; i++) {
                         for (int j = 0; j < nbCol2; j++) {
                             SDL_RenderCopy(ecran, fond, &SrcR_sprite2[i][j], &DestR_sprite2[i][j]);
-                            spritesEnnemis(ennemis, nbMonstre, SrcRSmo, DestRSmo, smokeW, smokeH, fenetreW, fenetreH,
-                                           nbCol, nbLig);
-                            for (int i = 0; i < nbMonstre; i++) {
-                                SDL_RenderCopy(ecran, smoke, &SrcRSmo[i], &DestRSmo[i]);
-                            }
-                            SDL_RenderCopy(ecran, sprites, &SrcR_perso, &DestR_perso);
                         }
                     }
+                    spritesEnnemis(ennemis, nbMonstre, SrcRSmo, DestRSmo, smokeW, smokeH, fenetreW, fenetreH,nbCol, nbLig);
+                    for (int i = 0; i < nbMonstre; i++) {
+                        SDL_RenderCopy(ecran, smoke, &SrcRSmo[i], &DestRSmo[i]);
+                    }
+                    SDL_RenderCopy(ecran, sprites, &SrcR_perso, &DestR_perso);
                 }
             }
             else {
@@ -236,11 +241,23 @@ int main(void) {
                     texte=charger_texte(msg,ecran,font,color);
                     int objetW2,objetH2;
                     SDL_QueryTexture(texte,&key,NULL,&objetW2,&objetH2);
-                    text_pos.w = objetW2; // Largeur du texte en pixels (à récupérer)
+                    text_pos.w = objetW2;
                     text_pos.h = objetH2;
-                    if (ennemis->next == NULL) printf("Vous avez gagnez!");
+                    SDL_RenderCopy(ecran,texte,NULL,&text_pos);
+
+                    texte=charger_texte(msg2,ecran,font,color);
+                    SDL_QueryTexture(texte,&key,NULL,&objetW2,&objetH2);
+                    text_pos2.w = objetW2; // Largeur du texte en pixels (à récupérer)
+                    text_pos2.h = objetH2;
+                    SDL_RenderCopy(ecran,texte,NULL,&text_pos2);
                 }
-                ennemis=cleanEnnemi(monMonstre,ennemis,&nbMonstre,&ecr);
+                int ecrnow=ecr;
+                ennemis=cleanEnnemi(monMonstre,ennemis,&nbMonstre,&ecr,&DestR_perso);
+                if (ecr!=ecrnow) {
+                    ennemis=creationMonstre(5,tab2,nbLig2,nbCol2,ecr);
+                    nbMonstre=5;
+                    monMonstre->positionX=0;
+                }
                 action=0;
             }
 
@@ -282,18 +299,15 @@ int main(void) {
                             break;
                         case SDL_KEYUP:
                             //case SDL_KEYDOWN:
-                            deplacement(monMonstre, &evenements, &DestR_perso, &SrcR_perso, tab, fenetreW,
-                                               fenetreH, nbCol, nbLig,
-                                               objetH, objetW);
+                            if (ecr==1) deplacement(monMonstre, &evenements, &DestR_perso, &SrcR_perso, tab, fenetreW,fenetreH, nbCol, nbLig,objetH, objetW);
+                            else deplacement(monMonstre, &evenements, &DestR_perso, &SrcR_perso, tab2, fenetreW,fenetreH, nbCol, nbLig,objetH, objetW);
                             if ((evenements.key.keysym.sym == SDLK_q) ||
                                 (evenements.key.keysym.sym == SDLK_ESCAPE))
                                 terminer = true;
                     }
                 }
             }
-            if (encombat) {
-                SDL_RenderCopy(ecran,texte,NULL,&text_pos);
-            }
+
             SDL_RenderPresent(ecran);
         }
 

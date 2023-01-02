@@ -21,7 +21,7 @@ monstre creerMonstre(int p,int d, int a,int pX,int pY){
 //création d'une liste contenant les monstres et remplis avec des monstres automatiquement
 listeEnnemi creationMonstre(int nbMonstre,char** tab,int nbLig,int nbCol,int diff){//nblig et nbcol
     //creation des monstres avec des caractéristiques aleatoire
-    monstre monstre1= creerMonstre(100*diff,5+5*diff,15*diff,(nbCol-1)/diff,nbLig/2);
+    monstre monstre1= creerMonstre(40+40*diff,7+3*diff,10+5*diff,(nbCol-1)/diff,nbLig/2);
     listeEnnemi l=creerListeEnnemi(monstre1);
     for(int i = 1; i<nbMonstre; i++){
         int pX=(rand()%nbCol),pY=(rand()%nbLig);
@@ -44,8 +44,9 @@ listeEnnemi cleanEnnemi(monstre m1,listeEnnemi l,int* n,int* ecr,SDL_Rect* DestR
     }
     else if (l->e->pv<=0){//lorsque le monstre est mort
         if (l->e->def>9) {
-            *ecr=2;
+            (*ecr)++;
             DestR_perso->x=0;
+            m1->pv+=100;
         }
         (*n)--;
         listeEnnemi laux=l->next;
@@ -120,7 +121,8 @@ bool collisionListe(monstre m1,listeEnnemi l,char*msg){
 //permet de visualiser le placement des monstres sur la carte pour tous les monstres de la liste ennemis
 void spritesEnnemis(listeEnnemi ennemis,int nbMonstre,SDL_Rect* SrcRSmo,SDL_Rect* DestRSmo,int smokeW,int smokeH,int fenetreW,int fenetreH,int nbCol,int nbLig){
     listeEnnemi l=ennemis;
-    for (int i=0;i<nbMonstre;i++) {
+    l=l->next;
+    for (int i=1;i<nbMonstre;i++) {
         //permet de mettre une image spéciale pour visualiser l'emplacement des monstres sur le plateau de jeux
         SrcRSmo[i].x = 0;
         SrcRSmo[i].y = smokeH/2;
@@ -132,5 +134,58 @@ void spritesEnnemis(listeEnnemi ennemis,int nbMonstre,SDL_Rect* SrcRSmo,SDL_Rect
         DestRSmo[i].h = fenetreH / nbLig *1.5;//hauteur de la smoke
         l=l->next;
     }
+}
+
+void save(int ecr,monstre m1,listeEnnemi ennemis){
+    listeEnnemi l=ennemis;
+    FILE *fichier = NULL;
+    fichier = fopen("save.txt", "w");//a pour écrire dans un fichier déjà écrit sinon w pour écrire dans un fichier
+    fputc((char)ecr,fichier);
+    fputc((char)(m1->pv),fichier);
+    fputc((char)(m1->attaque),fichier);
+    fputc((char)(m1->def),fichier);
+    fputc((char)(m1->positionX),fichier);
+    fputc((char)(m1->positionY),fichier);
+    fputc((char)(m1->lvl),fichier);
+    while (l!=NULL){
+        fputc((char)(l->e->pv),fichier);
+        fputc((char)(l->e->def),fichier);
+        fputc((char)(l->e->attaque),fichier);
+        fputc((char)(l->e->positionX),fichier);
+        fputc((char)(l->e->positionY),fichier);
+        l=l->next;
+    }
+    fputc(255,fichier);
+    fclose(fichier);
+}
+
+listeEnnemi load(int* ecr,monstre m1,int* nb){
+    FILE* fichier = NULL ;
+    fichier = fopen("save.txt", "r") ;
+    *ecr=fgetc(fichier);
+    m1->pv=fgetc(fichier);
+    m1->attaque=fgetc(fichier);
+    m1->def=fgetc(fichier);
+    m1->positionX=fgetc(fichier);
+    m1->positionY=fgetc(fichier);
+    m1->lvl=fgetc(fichier);
+    int c = fgetc(fichier);
+    monstre m = creerMonstre(c,fgetc(fichier),fgetc(fichier),fgetc(fichier),fgetc(fichier));
+    c = fgetc(fichier);
+    listeEnnemi  l = creerListeEnnemi(m);
+    printf("%d\n",c);
+    *nb=1;
+    while (c!=255 && c!=0){
+        int d=fgetc(fichier);
+        int a=fgetc(fichier);
+        int pX=fgetc(fichier);
+        int pY=fgetc(fichier);
+        monstre m = creerMonstre(c,d,a,pX,pY);
+        ajouterEnnemi(l,m);
+        c = fgetc(fichier);
+        (*nb)++;
+    }
+    fclose(fichier);
+    return l;
 }
 

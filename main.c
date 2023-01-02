@@ -130,6 +130,34 @@ int main(void) {
     DestR_fond2.w = fenetreW;
     DestR_fond2.h = fenetreH;
 
+    SDL_Texture *fondwin = charger_image("fond_win.bmp", ecran);
+    //recupère taille objet
+    SDL_QueryTexture(fondwin, NULL, NULL, &objet2W, &objet2H);
+    SDL_Rect DestR_fondwin, SrcR_fondwin;
+    //placement du fond dans la fenètre de jeux
+    SrcR_fondwin.x = 0;
+    SrcR_fondwin.y = 0;
+    SrcR_fondwin.w = objet2W;
+    SrcR_fondwin.h = objet2H;
+    DestR_fondwin.x = 0;
+    DestR_fondwin.y = 0;
+    DestR_fondwin.w = fenetreW;
+    DestR_fondwin.h = fenetreH;
+
+    SDL_Texture *fondgo = charger_image("fond_game_over.bmp", ecran);
+    //recupère taille objet
+    SDL_QueryTexture(fondgo, NULL, NULL, &objet2W, &objet2H);
+    SDL_Rect DestR_fondgo, SrcR_fondgo;
+    //placement du fond dans la fenètre de jeux
+    SrcR_fondgo.x = 0;
+    SrcR_fondgo.y = 0;
+    SrcR_fondgo.w = objet2W;
+    SrcR_fondgo.h = objet2H;
+    DestR_fondgo.x = 0;
+    DestR_fondgo.y = 0;
+    DestR_fondgo.w = fenetreW;
+    DestR_fondgo.h = fenetreH;
+
     // suivi des points de vie
     TTF_Init();
     TTF_Font *font = TTF_OpenFont("./angelina.TTF",28);
@@ -184,19 +212,36 @@ int main(void) {
         SDL_Rect SrcRSmo[nbMonstre], DestRSmo[nbMonstre];
         spritesEnnemis(ennemis,nbMonstre,SrcRSmo,DestRSmo,smokeW,smokeH,fenetreW,fenetreH,nbCol,nbLig);
 
+        SDL_Texture *boss = charger_image_transparente("boss.bmp", ecran, r, g, b);
+        int bossW;
+        int bossH;
+        //charger l'image permettant la visualisation des monstres
+        SDL_Surface *surfaceBoss = SDL_LoadBMP("smoke.bmp");
+        Uint32 keyBoss = SDL_MapRGB(surfaceBoss->format, r, g, b);
+        SDL_QueryTexture(boss, &keyBoss, NULL, &bossW, &bossH);
+        SDL_Rect SrcRBoss, DestRBoss;
+        SrcRBoss.x = 0;
+        SrcRBoss.y = 0;
+        SrcRBoss.w = bossW; // Largeur de l’objet en pixels de la texture
+        SrcRBoss.h = bossH; // Hauteur de l’objet en pixels de la texture
+        DestRBoss.x = fenetreW / nbCol * ennemis->e->positionX;
+        DestRBoss.y = fenetreH / nbLig * ennemis->e->positionY+10;
+        DestRBoss.w = fenetreW / nbCol ;//largeur de la smoke
+        DestRBoss.h = fenetreH / nbLig ;//hauteur de la smoke
+
         //Variable du jeu
         //int etat = 0;
         bool encombat=false;
-        int ecr=1;
+        int ecr=0;
         int action=0;
         //créer mon Monstre qui combat les ennemis
-        monstre monMonstre = creerMonstre(200, 5, 10,0,0);
+        monstre monMonstre = creerMonstre(180, 5, 10,0,0);
         char msg2[100]="UwU";
 
     // Boucle principale
         while (!terminer) {
 
-            if (collisionListe(monMonstre, ennemis,msg2)) encombat = true;
+            if (collisionListe(monMonstre, ennemis,msg2) && (ecr==1 || ecr==2)) encombat = true;
             else encombat=false;
             SDL_RenderClear(ecran);
 
@@ -208,7 +253,8 @@ int main(void) {
                         }
                     }
                     spritesEnnemis(ennemis, nbMonstre, SrcRSmo, DestRSmo, smokeW, smokeH, fenetreW,fenetreH,nbCol, nbLig);
-                    for (int i = 0; i < nbMonstre; i++) {
+                    SDL_RenderCopy(ecran, boss, &SrcRBoss, &DestRBoss);
+                    for (int i = 1; i < nbMonstre; i++) {
                         SDL_RenderCopy(ecran, smoke, &SrcRSmo[i], &DestRSmo[i]);
                     }
                     SDL_RenderCopy(ecran, sprites, &SrcR_perso, &DestR_perso);
@@ -220,10 +266,17 @@ int main(void) {
                         }
                     }
                     spritesEnnemis(ennemis, nbMonstre, SrcRSmo, DestRSmo, smokeW, smokeH, fenetreW, fenetreH,nbCol, nbLig);
-                    for (int i = 0; i < nbMonstre; i++) {
+                    SDL_RenderCopy(ecran, boss, &SrcRBoss, &DestRBoss);
+                    for (int i = 1; i < nbMonstre; i++) {
                         SDL_RenderCopy(ecran, smoke, &SrcRSmo[i], &DestRSmo[i]);
                     }
                     SDL_RenderCopy(ecran, sprites, &SrcR_perso, &DestR_perso);
+                }
+                else if (ecr==3){
+                    SDL_RenderCopy(ecran, fondwin, &SrcR_fondwin, &DestR_fondwin);
+                }
+                else if(ecr==4){
+                    SDL_RenderCopy(ecran, fondgo, &SrcR_fondgo, &DestR_fondgo);
                 }
             }
             else {
@@ -234,76 +287,128 @@ int main(void) {
             if (encombat) {
                 encombat=combat(monMonstre, ennemis,action);
                 if (!(monMonstre->pv>0)) {
-                    printf("Vous êtes mort !\n");
-                    terminer = true;
+                    ecr=4;
+                    encombat=false;
                 } else {
-                    sprintf(msg,"PV: %d Attaque: %d Defense: %d", monMonstre->pv,monMonstre->attaque+monMonstre->lvl,monMonstre->def+monMonstre->lvl/2);
-                    texte=charger_texte(msg,ecran,font,color);
-                    int objetW2,objetH2;
-                    SDL_QueryTexture(texte,&key,NULL,&objetW2,&objetH2);
+                    sprintf(msg, "PV: %d Attaque: %d Defense: %d", monMonstre->pv,
+                            monMonstre->attaque + monMonstre->lvl, monMonstre->def + monMonstre->lvl / 2);
+                    texte = charger_texte(msg, ecran, font, color);
+                    int objetW2, objetH2;
+                    SDL_QueryTexture(texte, &key, NULL, &objetW2, &objetH2);
                     text_pos.w = objetW2;
                     text_pos.h = objetH2;
-                    SDL_RenderCopy(ecran,texte,NULL,&text_pos);
+                    SDL_RenderCopy(ecran, texte, NULL, &text_pos);
 
-                    texte=charger_texte(msg2,ecran,font,color);
-                    SDL_QueryTexture(texte,&key,NULL,&objetW2,&objetH2);
+                    texte = charger_texte(msg2, ecran, font, color);
+                    SDL_QueryTexture(texte, &key, NULL, &objetW2, &objetH2);
                     text_pos2.w = objetW2; // Largeur du texte en pixels (à récupérer)
                     text_pos2.h = objetH2;
-                    SDL_RenderCopy(ecran,texte,NULL,&text_pos2);
+                    SDL_RenderCopy(ecran, texte, NULL, &text_pos2);
+
+                    int ecrnow = ecr;
+                    ennemis = cleanEnnemi(monMonstre, ennemis, &nbMonstre, &ecr, &DestR_perso);
+                    if (ecr != ecrnow) {
+                        ennemis = creationMonstre(5, tab2, nbLig2, nbCol2, ecr);
+                        nbMonstre = 5;
+                        monMonstre->positionX = 0;
+                        DestRBoss.x = fenetreW / nbCol * ennemis->e->positionX;
+                        DestRBoss.y = fenetreH / nbLig * ennemis->e->positionY+10;
+                    }
+                    action = 0;
                 }
-                int ecrnow=ecr;
-                ennemis=cleanEnnemi(monMonstre,ennemis,&nbMonstre,&ecr,&DestR_perso);
-                if (ecr!=ecrnow) {
-                    ennemis=creationMonstre(5,tab2,nbLig2,nbCol2,ecr);
-                    nbMonstre=5;
-                    monMonstre->positionX=0;
-                }
-                action=0;
             }
 
             while (SDL_PollEvent(&evenements)) {
-                if (encombat) {
-                    int x,y;
-                    switch (evenements.type) {
-                        case SDL_MOUSEBUTTONDOWN:
-                            switch(evenements.button.button)
-                            {
-                                case SDL_BUTTON_LEFT:
-                                    SDL_GetMouseState(&x,&y);
-                                    if (x>=7*fenetreW/12 && x<=7*fenetreW/12+fenetreW/6 && y>=4*fenetreH/6 && y<=4*fenetreH/6+fenetreH/15){
-                                        action=1;
-                                    }
-                                    else if (x>=7*fenetreW/12 && x<=7*fenetreW/12+fenetreW/6 && y>=9*fenetreH/12 && y<=9*fenetreH/12+fenetreH/15){
-                                        action=2;
-                                    }
-                                    break;
-                                case SDL_BUTTON_RIGHT:
-                                    encombat=false;
-                                    (SrcR_perso).x = 0;
-                                    (SrcR_perso).y = objetH/2;
-                                    if ((DestR_perso).x + fenetreW / nbCol < fenetreW &&
-                                        (tab[(DestR_perso).y / (fenetreH / nbLig)][(DestR_perso).x / (fenetreW / nbCol) + 1] == '0'||tab[(DestR_perso).y / (fenetreH / nbLig)][(DestR_perso).x / (fenetreW / nbCol) + 1] == '4')) {
-                                        (DestR_perso).x = ((DestR_perso).x + fenetreW / nbCol);
-                                        monMonstre->positionX++;
-                                    }
-                                    break;
-                                default:
-                                    break;
-                            }
-                            break;
+                if (ecr == 1 || ecr == 2) {
+                    if (encombat) {
+                        int x, y;
+                        switch (evenements.type) {
+                            case SDL_MOUSEBUTTONDOWN:
+                                switch (evenements.button.button) {
+                                    case SDL_BUTTON_LEFT:
+                                        SDL_GetMouseState(&x, &y);
+                                        if (x >= 7 * fenetreW / 12 && x <= 7 * fenetreW / 12 + fenetreW / 6 &&
+                                            y >= 4 * fenetreH / 6 && y <= 4 * fenetreH / 6 + fenetreH / 15) {
+                                            action = 1;
+                                        } else if (x >= 7 * fenetreW / 12 && x <= 7 * fenetreW / 12 + fenetreW / 6 &&
+                                                   y >= 9 * fenetreH / 12 && y <= 9 * fenetreH / 12 + fenetreH / 15) {
+                                            action = 2;
+                                        }
+                                        break;
+                                    case SDL_BUTTON_RIGHT:
+                                        encombat = false;
+                                        (SrcR_perso).x = 0;
+                                        (SrcR_perso).y = objetH / 2;
+                                        if ((DestR_perso).x + fenetreW / nbCol < fenetreW &&
+                                            (tab[(DestR_perso).y / (fenetreH / nbLig)][
+                                                     (DestR_perso).x / (fenetreW / nbCol) + 1] == '0' ||
+                                             tab[(DestR_perso).y / (fenetreH / nbLig)][
+                                                     (DestR_perso).x / (fenetreW / nbCol) + 1] == '4')) {
+                                            (DestR_perso).x = ((DestR_perso).x + fenetreW / nbCol);
+                                            monMonstre->positionX++;
+                                        }
+                                        break;
+                                    default:
+                                        break;
+                                }
+                                break;
+                        }
+                    } else {
+                        switch (evenements.type) {
+                            case SDL_QUIT:
+                                terminer = true;
+                                break;
+                            case SDL_KEYUP:
+                                //case SDL_KEYDOWN:
+                                if (ecr == 1)
+                                    deplacement(monMonstre, &evenements, &DestR_perso, &SrcR_perso, tab, fenetreW,
+                                                fenetreH, nbCol, nbLig, objetH, objetW);
+                                else
+                                    deplacement(monMonstre, &evenements, &DestR_perso, &SrcR_perso, tab2, fenetreW,
+                                                fenetreH, nbCol, nbLig, objetH, objetW);
+                                if ((evenements.key.keysym.sym == SDLK_q) ||
+                                    (evenements.key.keysym.sym == SDLK_ESCAPE))
+                                    terminer = true;
+                                else if (evenements.key.keysym.sym == SDLK_s){
+                                    save(ecr,monMonstre,ennemis);
+                                    terminer=true;
+                                }
+                                else if (evenements.key.keysym.sym == SDLK_l){
+                                    ennemis=load(&ecr,monMonstre,&nbMonstre);
+                                    spritesEnnemis(ennemis,nbMonstre,SrcRSmo,DestRSmo,smokeW,smokeH,fenetreW,fenetreH,nbCol,nbLig);
+                                    DestR_perso.x = (fenetreW / nbCol)*monMonstre->positionX;
+                                    DestR_perso.y = (fenetreH / nbLig)*monMonstre->positionY;
+                                    DestR_perso.w = fenetreW / nbCol; // Largeur du sprite
+                                    DestR_perso.h = fenetreH / nbLig ;
+                                }
+                        }
                     }
-                } else {
+                }
+                else if (ecr==3||ecr==4){
                     switch (evenements.type) {
-                        case SDL_QUIT:
-                            terminer = true;
-                            break;
                         case SDL_KEYUP:
-                            //case SDL_KEYDOWN:
-                            if (ecr==1) deplacement(monMonstre, &evenements, &DestR_perso, &SrcR_perso, tab, fenetreW,fenetreH, nbCol, nbLig,objetH, objetW);
-                            else deplacement(monMonstre, &evenements, &DestR_perso, &SrcR_perso, tab2, fenetreW,fenetreH, nbCol, nbLig,objetH, objetW);
                             if ((evenements.key.keysym.sym == SDLK_q) ||
                                 (evenements.key.keysym.sym == SDLK_ESCAPE))
                                 terminer = true;
+                    }
+                }
+                else if (ecr==0){
+                    switch (evenements.type) {
+                        case SDL_KEYUP:
+                            if ((evenements.key.keysym.sym == SDLK_q) ||
+                                (evenements.key.keysym.sym == SDLK_ESCAPE))
+                                terminer = true;
+                            else if (evenements.key.keysym.sym == SDLK_l){
+                                ennemis=load(&ecr,monMonstre,&nbMonstre);
+                                spritesEnnemis(ennemis,nbMonstre,SrcRSmo,DestRSmo,smokeW,smokeH,fenetreW,fenetreH,nbCol,nbLig);
+                                DestR_perso.x = (fenetreW / nbCol)*monMonstre->positionX;
+                                DestR_perso.y = (fenetreH / nbLig)*monMonstre->positionY;
+                                DestR_perso.w = fenetreW / nbCol; // Largeur du sprite
+                                DestR_perso.h = fenetreH / nbLig ;
+                            }
+                            else if (evenements.key.keysym.sym == SDLK_d){
+                                ecr=1;
+                            }
                     }
                 }
             }

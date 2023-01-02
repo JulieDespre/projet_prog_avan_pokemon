@@ -37,5 +37,7 @@ bool collision(monstre m1,monstre m2);
 bool collisionListe(monstre m1,listeEnnemi l,char* msg);
 listeEnnemi creationMonstre(int nbMonstre,char** tab,int nbLig,int nbCol,int diff);
 void spritesEnnemis(listeEnnemi ennemis,int nbMonstre,SDL_Rect* SrcRCit,SDL_Rect* DestRCit,int citrouilleW,int citrouilleH,int fenetreW,int fenetreH,int nbCol,int nbLig);
+void save(int ecr,monstre m1,listeEnnemi ennemis);
+listeEnnemi load(int* ecr,monstre m1,int* nb);
 
 #endif //MAIN_MONSTRE_H

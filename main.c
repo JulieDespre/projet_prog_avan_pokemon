@@ -147,7 +147,7 @@ int main(void) {
     DestR_fond2.w = fenetreW;
     DestR_fond2.h = fenetreH;
 
-    SDL_Texture *fonddeb = charger_image("debut_jeux.bmp", ecran);
+    SDL_Texture *fonddeb = charger_image("deb_ok.bmp", ecran);
     //recupère taille objet
     SDL_QueryTexture(fonddeb, NULL, NULL, &objet2W, &objet2H);
     SDL_Rect DestR_fonddeb, SrcR_fonddeb;
